@@ -1,16 +1,16 @@
 defmodule Issues.CLI do
-
-	@default_count 4	# Create a const for default issues count.
-
 	@moduledoc """
 		Handle command line parsing and dispatch of issues to various functions.
 	"""
+
+	import Issues.Tabler, only: [ print_table_for_columns: 2 ]
+	@default_count 4	# Create a const for default issues count.
 
 	@doc """
 		Take our args, parse them, then pass them to the `process` function.
 		`Process` calls our `Issues` function to retreieve from GH & decodes response.	
 	"""
-	def run(argv) do
+	def main(argv) do
 		argv |> parse_args() |> process()
 	end
 
@@ -19,6 +19,9 @@ defmodule Issues.CLI do
 		|> decode_response()
 		|> convert_to_list_of_hashdicts()
 		|> sort_into_ascending_order()
+		|> Enum.take(count)
+		|> print_table_for_columns(["number", "created_at", "title"])
+
 	end
 
 	def sort_into_ascending_order(issues_list) do
@@ -34,6 +37,9 @@ defmodule Issues.CLI do
 		System.halt(2)
 	end
 
+	@doc """
+		Convert our JSON tuples into HashDicts for easier access to Key/Values.
+	"""
 	def convert_to_list_of_hashdicts(list) do list
 	  |> Enum.map(&Enum.into(&1, HashDict.new))
 	end

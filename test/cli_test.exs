@@ -13,7 +13,7 @@ defmodule CliTest do
   	assert parse_args(["user", "project"]) == {"user", "project", 4}
   end
 
-  test "sort ascending orders the correct way" do
+  test "sort ascending orders the mothafuckin' correct way" do
   	result = sort_into_ascending_order(fake_created_at_list(["c", "a", "b"]))
   	issues = for issue <- result, do: issue["created_at"]
   	assert issues == ~w{a b c}
