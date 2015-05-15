@@ -14,9 +14,16 @@ defmodule Issues.CLI do
 		argv |> parse_args() |> process()
 	end
 
-	def process({user, project, _count}) do
+	def process({user, project, count}) do
 		Issues.fetch(user, project) 
 		|> decode_response()
+		|> convert_to_list_of_hashdicts()
+		|> sort_into_ascending_order()
+	end
+
+	def sort_into_ascending_order(issues_list) do
+		Enum.sort issues_list,
+			fn i1, i2 -> i1["created_at"] <= i2["created_at"] end
 	end
 
 	def decode_response({:ok, body}), do: body
